@@ -1,25 +1,42 @@
-def detect_growth_events(df, threshold=-350, area_label='area (sq µm)'):
-    """Given a dataframe containing bacterial growth areas, detect growth events.
+import numpy as np
+
+def detect_growth_events(areas, threshold=-350):
+    """Given a list of bacterial growth areas, detect growth events.
 
     A growth event is defined as when the bacterial area changed by a certain
     threshold value.
 
-    :param df: dataframe of bacterial areas
-    :type df: pandas.DataFrame
+    :param areas: list of areas
+    :type areas: list
     :param threshold: the bacterial area change threshold used to detect
                       growth events, defaults to -350
     :type threshold: int
-    :param area_label: dataframe column label for the bacterial area,
-                       defaults to 'area (sq µm)'
-    :type area_label: str, optional
 
     :return: list containing growth events
     :rtype: list
     """
     event_id = 0
-    events = []
-    for ele in df[area_label].diff() < threshold:
+    events = [event_id]
+    for ele in np.diff(areas) < threshold:
         if ele:
             event_id += 1
         events.append(event_id)
     return events
+
+def normalize_times(times, events):
+    """Given a list of times and event ids, normalize the times (i.e. calculate
+    the time since the start of each event).
+
+    :param times: list of times
+    :type times: list
+    :param events: list of event ids
+    :type events: list
+
+    :return: list of normalized times
+    :rtype: list
+    """
+    normalized_times = []
+    for event in sorted(np.unique(events)):
+        event_times = times[events == event]
+        normalized_times.extend(list(event_times - min(event_times)))
+    return normalized_times
