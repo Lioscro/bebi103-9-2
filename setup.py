@@ -10,7 +10,7 @@ long_description = read('README.md')
 
 setup(
     name='bebi103_9_2',
-    version='1.0.1',
+    version='1.0.2',
     url='https://github.com/Lioscro/bebi103-9-2',
     description='Pip-installable package with functions used in hw9.2',
     long_description=long_description,
